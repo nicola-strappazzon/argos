@@ -15,12 +15,13 @@ Argos is a personal [Model Context Protocol (MCP)](https://modelcontextprotocol.
 | `aws_rds_parameter_groups` | List all user-customized parameters of the parameter group associated with a given RDS instance |
 | `aws_rds_performance_insights` | Get the top 10 SQL queries and top 10 wait events by DB load average from Performance Insights. Accepts a configurable time window in minutes (default: 60). Supports RDS and DocumentDB |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
+| `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |
 
 ## Requirements
 
 - Go 1.25+
 - AWS credentials configured via `~/.aws/credentials`, environment variables, or IAM role
-- [Percona Toolkit](https://www.percona.com/software/database-tools/percona-toolkit) — `pt-query-digest` must be in `$PATH`
+- [Percona Toolkit](https://www.percona.com/software/database-tools/percona-toolkit) — `pt-query-digest` and `pt-variable-advisor` must be in `$PATH`
 - Claude Code CLI
 
 ## Environment Variables
