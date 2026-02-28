@@ -40,7 +40,12 @@ go build -o argos .
 ## Register with Claude Code
 
 ```bash
-claude mcp add argos --scope user --transport stdio --env AWS_REGION=eu-west-1 /path/to/argos/argos
+claude mcp add argos \
+  --scope user \
+  --transport stdio \
+  --env AWS_REGION=eu-west-1 \
+  -- \
+  /path/to/argos/argos
 ```
 
 Replace `/path/to/argos/argos` with the absolute path to the compiled binary.
