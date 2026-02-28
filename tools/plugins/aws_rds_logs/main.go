@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/nicola-strappazzon/mcp/tools/registry"
+	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"

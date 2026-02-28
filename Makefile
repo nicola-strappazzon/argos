@@ -18,7 +18,7 @@ deps: ## Download dependencies
 
 build: ## Build binary for local operating system
 	@go generate ./...
-	@go build -o demerzel main.go
+	@go build -o argos main.go
 
 run: ## Run code.
 	@go run main.go

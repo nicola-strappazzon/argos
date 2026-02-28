@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	_ "github.com/nicola-strappazzon/mcp/tools/plugins"
-	"github.com/nicola-strappazzon/mcp/tools/registry"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins"
+	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )

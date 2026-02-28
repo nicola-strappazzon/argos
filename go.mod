@@ -1,4 +1,4 @@
-module github.com/nicola-strappazzon/mcp
+module github.com/nicola-strappazzon/argos
 
 go 1.25.0
 
