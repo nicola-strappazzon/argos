@@ -1,12 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "mcp__mymcp__aws_rds_instances",
       "Bash(python3:*)",
-      "mcp__mymcp__aws_rds_metrics",
-      "mcp__mymcp__aws_rds_logs",
-      "mcp__mymcp__aws_rds_log_download",
-      "mcp__mymcp__pt_query_digest"
+      "mcp__argos__aws_rds_instances",
+      "mcp__argos__aws_rds_log_download",
+      "mcp__argos__aws_rds_logs",
+      "mcp__argos__aws_rds_metrics",
+      "mcp__argos__aws_rds_parameter_groups"
+      "mcp__argos__pt_query_digest",
     ]
   }
 }
