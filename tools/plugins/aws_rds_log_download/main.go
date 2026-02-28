@@ -15,7 +15,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const baseDir = "/tmp/aws_rds_logs"
+const baseDir = "/tmp/argos/aws_rds_logs"
 
 func init() {
 	registry.Add(registry.Property{

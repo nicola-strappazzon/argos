@@ -13,12 +13,12 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const outputDir = "/tmp/pt-query-digest"
+const outputDir = "/tmp/argos/pt-query-digest"
 
 func init() {
 	registry.Add(registry.Property{
 		Name:        "pt_query_digest",
-		Description: "Run pt-query-digest on a downloaded RDS slow query log file and save the report to /tmp/pt-query-digest.",
+		Description: "Run pt-query-digest on a downloaded RDS slow query log file and save the report to /tmp/argos/pt-query-digest.",
 		InputSchema: map[string]any{
 			"type": "object",
 			"properties": map[string]any{
