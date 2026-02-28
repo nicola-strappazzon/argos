@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/nicola-strappazzon/argos/internal/awsconfig"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -39,9 +39,7 @@ func init() {
 			instanceID, _ := args["db_instance_identifier"].(string)
 			logFileName, _ := args["log_file_name"].(string)
 
-			sess, err := session.NewSession(&aws.Config{
-				Region: aws.String("eu-west-1"),
-			})
+			sess, err := awsconfig.NewSession()
 			if err != nil {
 				return &mcp.CallToolResult{}, nil, err
 			}

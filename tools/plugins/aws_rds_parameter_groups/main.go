@@ -3,10 +3,10 @@ package aws_rds_parameter_groups
 import (
 	"context"
 
+	"github.com/nicola-strappazzon/argos/internal/awsconfig"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -23,9 +23,7 @@ func init() {
 		Name:        "aws_rds_parameter_groups",
 		Description: "List all RDS DB parameter groups.",
 		Function: func(ctx context.Context, req *mcp.CallToolRequest, args map[string]any) (*mcp.CallToolResult, any, error) {
-			sess, err := session.NewSession(&aws.Config{
-				Region: aws.String("eu-west-1"),
-			})
+			sess, err := awsconfig.NewSession()
 			if err != nil {
 				return &mcp.CallToolResult{}, nil, err
 			}
