@@ -94,10 +94,16 @@ Argos only requires read permissions. The IAM user or role must have:
     "rds:DescribeDBParameterGroups",
     "rds:DescribeDBParameters",
     "rds:DescribeEvents",
+    "rds:DescribeDBSnapshots",
+    "rds:DescribePendingMaintenanceActions",
     "cloudwatch:GetMetricData",
     "pi:DescribeDimensionKeys",
-    "pi:GetResourceMetrics"
+    "pi:GetResourceMetrics",
+    "secretsmanager:ListSecrets",
+    "secretsmanager:GetSecretValue"
   ],
   "Resource": "*"
 }
 ```
+
+> **Note:** `aws_health_events` additionally requires `health:DescribeEvents` and `health:DescribeEventDetails`, but these are only available with AWS Business or Enterprise Support plan.
