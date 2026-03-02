@@ -13,7 +13,8 @@
       "mcp__argos__aws_rds_pending_maintenance",
       "mcp__argos__aws_rds_snapshots",
       "mcp__argos__aws_health_events",
-      "mcp__argos__mysql_global_variables"
+      "mcp__argos__mysql_global_variables",
+      "mcp__argos__aws_secrets_list"
     ]
   }
 }
