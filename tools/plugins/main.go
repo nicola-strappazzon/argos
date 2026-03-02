@@ -22,6 +22,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_overflow"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_ping"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_processlist"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_status"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_table_foreign_keys"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_table_indexes"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_tables"
