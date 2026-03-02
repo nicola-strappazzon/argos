@@ -3,6 +3,7 @@ package mysql_describe_table
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	mysqldriver "github.com/nicola-strappazzon/argos/internal/drivers/mysql"
 	"github.com/nicola-strappazzon/argos/tools/registry"
@@ -14,6 +15,7 @@ type Column struct {
 	Position  int    `json:"position"`
 	Name      string `json:"name"`
 	Type      string `json:"type"`
+	Unsigned  bool   `json:"unsigned"`
 	Nullable  bool   `json:"nullable"`
 	Default   string `json:"default,omitempty"`
 	Charset   string `json:"charset,omitempty"`
@@ -91,6 +93,7 @@ func init() {
 					return &mcp.CallToolResult{}, nil, fmt.Errorf("scanning row: %w", err)
 				}
 				col.Nullable = nullable == "YES"
+				col.Unsigned = strings.Contains(strings.ToLower(col.Type), "unsigned")
 				columns = append(columns, col)
 			}
 
