@@ -24,7 +24,9 @@
       "mcp__argos__mysql_overflow",
       "mcp__argos__pt_index_usage",
       "mcp__argos__mysql_status",
-      "mcp__argos__mysql_ping"
+      "mcp__argos__mysql_ping",
+      "mcp__argos__mysql_processlist",
+      "mcp__argos__mysql_explain"
     ]
   }
 }

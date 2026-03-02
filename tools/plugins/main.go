@@ -12,6 +12,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_explain"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_global_variables"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_ping"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_processlist"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_status"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_overflow"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
