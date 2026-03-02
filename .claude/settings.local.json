@@ -8,7 +8,8 @@
       "mcp__argos__aws_rds_metrics",
       "mcp__argos__aws_rds_parameter_groups",
       "mcp__argos__pt_query_digest",
-      "mcp__argos__aws_rds_events"
+      "mcp__argos__aws_rds_events",
+      "mcp__argos__pt_variable_advisor"
     ]
   }
 }

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/nicola-strappazzon/argos/internal/mysqlconfig"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -22,40 +23,26 @@ func init() {
 		InputSchema: map[string]any{
 			"type": "object",
 			"properties": map[string]any{
-				"host": map[string]any{
+				"db_instance_identifier": map[string]any{
 					"type":        "string",
-					"description": "MySQL host or RDS endpoint.",
-				},
-				"port": map[string]any{
-					"type":        "integer",
-					"description": "MySQL port (default: 3306).",
-				},
-				"username": map[string]any{
-					"type":        "string",
-					"description": "MySQL username.",
-				},
-				"password": map[string]any{
-					"type":        "string",
-					"description": "MySQL password.",
+					"description": "The RDS DB instance identifier. Credentials are read from ~/.my.cnf using this as the section name.",
 				},
 			},
-			"required": []string{"host", "username", "password"},
+			"required": []string{"db_instance_identifier"},
 		},
 		Function: func(ctx context.Context, req *mcp.CallToolRequest, args map[string]any) (*mcp.CallToolResult, any, error) {
-			host, _ := args["host"].(string)
-			username, _ := args["username"].(string)
-			password, _ := args["password"].(string)
+			instanceID, _ := args["db_instance_identifier"].(string)
 
-			port := 3306
-			if p, ok := args["port"].(float64); ok && p > 0 {
-				port = int(p)
+			creds, err := mysqlconfig.Load(instanceID)
+			if err != nil {
+				return &mcp.CallToolResult{}, nil, err
 			}
 
 			if err := os.MkdirAll(outputDir, 0755); err != nil {
 				return &mcp.CallToolResult{}, nil, fmt.Errorf("creating output directory: %w", err)
 			}
 
-			reportName := fmt.Sprintf("%s_%d.txt", strings.ReplaceAll(host, ".", "_"), port)
+			reportName := fmt.Sprintf("%s.txt", strings.ReplaceAll(instanceID, "-", "_"))
 			reportPath := filepath.Join(outputDir, reportName)
 
 			reportFile, err := os.Create(reportPath)
@@ -64,7 +51,7 @@ func init() {
 			}
 			defer reportFile.Close()
 
-			dsn := fmt.Sprintf("h=%s,u=%s,p=%s,P=%d", host, username, password, port)
+			dsn := fmt.Sprintf("h=%s,u=%s,p=%s,P=%d", creds.Host, creds.User, creds.Password, creds.Port)
 			cmd := exec.CommandContext(ctx, "pt-variable-advisor", dsn)
 			cmd.Stdout = reportFile
 			var stderr strings.Builder
@@ -81,8 +68,7 @@ func init() {
 			}
 
 			return &mcp.CallToolResult{}, map[string]any{
-				"host":        host,
-				"port":        port,
+				"instance":    instanceID,
 				"report_path": reportPath,
 				"size_kb":     sizeKB,
 			}, nil
