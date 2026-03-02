@@ -11,7 +11,8 @@
       "mcp__argos__aws_rds_events",
       "mcp__argos__pt_variable_advisor",
       "mcp__argos__aws_rds_pending_maintenance",
-      "mcp__argos__aws_rds_snapshots"
+      "mcp__argos__aws_rds_snapshots",
+      "mcp__argos__aws_health_events"
     ]
   }
 }

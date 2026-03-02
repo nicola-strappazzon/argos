@@ -15,6 +15,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_rds_parameter_groups` | List all user-customized parameters of the parameter group associated with a given RDS instance |
 | `aws_rds_performance_insights` | Get the top 10 SQL queries and top 10 wait events by DB load average from Performance Insights. Accepts a configurable time window in minutes (default: 60). Supports RDS and DocumentDB |
 | `aws_rds_events` | List recent RDS events (failovers, maintenance, reboots, storage issues) for an instance. Accepts a configurable time window in minutes (default: 1440 = 24 hours) |
+| `aws_health_events` | List AWS Health events from the Personal Health Dashboard (end-of-support notices, deprecations, service incidents). Filterable by service and status. **Requires AWS Business or Enterprise Support plan** |
 | `aws_rds_pending_maintenance` | List pending maintenance actions across all RDS instances (engine upgrades, OS patches, security updates) |
 | `aws_rds_snapshots` | List RDS snapshots (automated and manual) for a specific instance or all instances. Filterable by snapshot type |
 | `aws_rds_read_replicas` | List RDS read replicas and their replication lag in seconds. Optionally filter by source instance |

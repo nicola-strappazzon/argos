@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_health_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_pending_maintenance"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_read_replicas"
