@@ -59,6 +59,20 @@ To verify it's registered:
 claude mcp list
 ```
 
+## MySQL Credentials
+
+Tools that connect directly to MySQL (e.g. `pt_variable_advisor`) read credentials from `~/.my.cnf`. Each RDS instance must have its own section named after the instance identifier:
+
+```ini
+[com-prd-mysql-general-node01]
+host=com-prd-mysql-general-node01.xxxxxxxxxxxx.eu-west-1.rds.amazonaws.com
+user=your_user
+password=your_password
+port=3306
+```
+
+The section name must match exactly the `db_instance_identifier` used in the tool call.
+
 ## AWS Permissions
 
 Argos only requires read permissions. The IAM user or role must have:
