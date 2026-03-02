@@ -22,6 +22,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_rds_snapshots` | List RDS snapshots (automated and manual) for a specific instance or all instances. Filterable by snapshot type |
 | `aws_rds_read_replicas` | List RDS read replicas and their replication lag in seconds. Optionally filter by source instance |
 | `mysql_databases` | List databases on a MySQL instance with their size (MB), character set, collation and table count |
+| `mysql_tables` | List tables within a database with engine, size (data/index/free), charset, collation, row format, estimated rows, auto_increment, comment and timestamps |
 | `mysql_global_variables` | Run `SHOW GLOBAL VARIABLES` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `innodb%`) |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
 | `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |
