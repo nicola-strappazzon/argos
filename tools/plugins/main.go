@@ -5,6 +5,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_secrets_get"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_secrets_list"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_databases"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_describe_table"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_tables"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_global_variables"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
