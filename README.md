@@ -29,6 +29,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `mysql_global_variables` | Run `SHOW GLOBAL VARIABLES` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `innodb%`) |
 | `mysql_overflow` | Check AUTO_INCREMENT overflow risk for all tables in a database. Returns current value, max value, percentage used, and remaining capacity per column, sorted by percentage used descending |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
+| `pt_index_usage` | Run `pt-index-usage` on a downloaded slow query log to find unused indexes. Saves the report to `/tmp/argos/pt-index-usage/`. Optionally filter by database |
 | `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |
 
 ## Requirements
