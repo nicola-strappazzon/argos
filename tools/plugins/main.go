@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_instances"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_log_download"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_logs"

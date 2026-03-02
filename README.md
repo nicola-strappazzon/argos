@@ -14,6 +14,7 @@ Argos is a personal [Model Context Protocol (MCP)](https://modelcontextprotocol.
 | `aws_rds_log_download` | Download a log file to `/tmp/argos/aws_rds_logs/<instance>/<log_file>` for local analysis |
 | `aws_rds_parameter_groups` | List all user-customized parameters of the parameter group associated with a given RDS instance |
 | `aws_rds_performance_insights` | Get the top 10 SQL queries and top 10 wait events by DB load average from Performance Insights. Accepts a configurable time window in minutes (default: 60). Supports RDS and DocumentDB |
+| `aws_rds_events` | List recent RDS events (failovers, maintenance, reboots, storage issues) for an instance. Accepts a configurable time window in minutes (default: 1440 = 24 hours) |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
 | `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |
 
@@ -71,6 +72,7 @@ Argos only requires read permissions. The IAM user or role must have:
     "rds:DownloadDBLogFilePortion",
     "rds:DescribeDBParameterGroups",
     "rds:DescribeDBParameters",
+    "rds:DescribeEvents",
     "cloudwatch:GetMetricData",
     "pi:DescribeDimensionKeys",
     "pi:GetResourceMetrics"
