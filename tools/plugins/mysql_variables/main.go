@@ -1,4 +1,4 @@
-package mysql_global_variables
+package mysql_variables
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "mysql_global_variables",
+		Name:        "mysql_variables",
 		Description: "Show MySQL global variables (SHOW GLOBAL VARIABLES) for an RDS instance. Optionally filter by variable name prefix.",
 		InputSchema: map[string]any{
 			"type": "object",
