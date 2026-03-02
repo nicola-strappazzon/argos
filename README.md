@@ -26,6 +26,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `mysql_describe_table` | Describe the columns of a table: type, nullability, default, charset, collation, key type, extra and comment |
 | `mysql_table_indexes` | List indexes of a table with type, uniqueness, visibility, cardinality, columns (with position and prefix length) and size in MB |
 | `mysql_table_foreign_keys` | List outgoing FKs (this table references others) and incoming FKs (other tables reference this table) with ON UPDATE/DELETE rules |
+| `mysql_ping` | Test the connection to a MySQL instance. Returns success status and round-trip latency in milliseconds |
 | `mysql_global_variables` | Run `SHOW GLOBAL VARIABLES` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `innodb%`) |
 | `mysql_overflow` | Check AUTO_INCREMENT overflow risk for all tables in a database. Returns current value, max value, percentage used, and remaining capacity per column, sorted by percentage used descending |
 | `mysql_status` | Run `SHOW ENGINE INNODB STATUS` and return parsed structured output: semaphores, latest deadlock (queries and victim), transactions, file I/O, log, buffer pool and row operations |
