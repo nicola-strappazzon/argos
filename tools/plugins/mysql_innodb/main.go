@@ -1,4 +1,4 @@
-package mysql_status
+package mysql_innodb
 
 import (
 	"context"
@@ -242,7 +242,7 @@ func parseInnoDBStatus(instanceID, raw string) InnoDBStatus {
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "mysql_status",
+		Name:        "mysql_innodb",
 		Description: "Run SHOW ENGINE INNODB STATUS on a MySQL instance and return the full output.",
 		InputSchema: map[string]any{
 			"type": "object",
