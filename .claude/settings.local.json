@@ -18,7 +18,8 @@
       "mcp__argos__aws_secrets_get",
       "mcp__argos__mysql_databases",
       "mcp__argos__mysql_tables",
-      "mcp__argos__mysql_describe_table"
+      "mcp__argos__mysql_describe_table",
+      "mcp__argos__mysql_table_indexes"
     ]
   }
 }
