@@ -10,6 +10,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_table_indexes"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_tables"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_global_variables"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_overflow"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_pending_maintenance"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_read_replicas"
