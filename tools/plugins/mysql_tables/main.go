@@ -21,6 +21,7 @@ type Table struct {
 	IndexMB       float64 `json:"index_mb"`
 	TotalMB       float64 `json:"total_mb"`
 	FreeMB        float64 `json:"free_mb"`
+	FragPct       float64 `json:"frag_pct"`
 	AutoIncrement int64   `json:"auto_increment,omitempty"`
 	Comment       string  `json:"comment,omitempty"`
 	CreatedAt     string  `json:"created_at,omitempty"`
@@ -67,6 +68,7 @@ func init() {
 					ROUND(COALESCE(t.index_length, 0) / 1024 / 1024, 2)                      AS index_mb,
 					ROUND(COALESCE(t.data_length + t.index_length, 0) / 1024 / 1024, 2)      AS total_mb,
 					ROUND(COALESCE(t.data_free, 0) / 1024 / 1024, 2)                         AS free_mb,
+					ROUND(COALESCE(t.data_free, 0) / NULLIF(t.data_length + t.index_length + t.data_free, 0) * 100, 1) AS frag_pct,
 					COALESCE(t.auto_increment, 0)                                             AS auto_increment,
 					COALESCE(t.table_comment, '')                                             AS comment,
 					COALESCE(DATE_FORMAT(t.create_time, '%Y-%m-%dT%H:%i:%SZ'), '')            AS created_at,
@@ -91,7 +93,7 @@ func init() {
 				var t Table
 				if err := rows.Scan(
 					&t.Name, &t.Engine, &t.RowFormat, &t.Charset, &t.Collation,
-					&t.Rows, &t.DataMB, &t.IndexMB, &t.TotalMB, &t.FreeMB,
+					&t.Rows, &t.DataMB, &t.IndexMB, &t.TotalMB, &t.FreeMB, &t.FragPct,
 					&t.AutoIncrement, &t.Comment, &t.CreatedAt, &t.UpdatedAt,
 				); err != nil {
 					return &mcp.CallToolResult{}, nil, fmt.Errorf("scanning row: %w", err)
