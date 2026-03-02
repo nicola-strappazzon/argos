@@ -22,7 +22,8 @@
       "mcp__argos__mysql_table_indexes",
       "mcp__argos__mysql_table_foreign_keys",
       "mcp__argos__mysql_overflow",
-      "mcp__argos__pt_index_usage"
+      "mcp__argos__pt_index_usage",
+      "mcp__argos__mysql_status"
     ]
   }
 }
