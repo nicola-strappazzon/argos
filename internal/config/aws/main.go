@@ -13,7 +13,17 @@ func NewSession() (*session.Session, error) {
 	if region == "" {
 		return nil, fmt.Errorf("AWS_REGION environment variable is not set")
 	}
-	return session.NewSession(&aws.Config{
-		Region: aws.String(region),
-	})
+
+	opts := session.Options{
+		Config: aws.Config{
+			Region: aws.String(region),
+		},
+		SharedConfigState: session.SharedConfigEnable,
+	}
+
+	if profile := os.Getenv("AWS_PROFILE"); profile != "" {
+		opts.Profile = profile
+	}
+
+	return session.NewSessionWithOptions(opts)
 }
