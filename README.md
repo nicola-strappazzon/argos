@@ -26,10 +26,11 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `mysql_describe_table` | Describe the columns of a table: type, nullability, default, charset, collation, key type, extra and comment |
 | `mysql_table_indexes` | List indexes of a table with type, uniqueness, visibility, cardinality, columns (with position and prefix length) and size in MB |
 | `mysql_table_foreign_keys` | List outgoing FKs (this table references others) and incoming FKs (other tables reference this table) with ON UPDATE/DELETE rules |
+| `mysql_health_check` | Run health checks on a MySQL instance and return key metrics with status (`ok` / `warning` / `critical`). Checks: InnoDB buffer pool hit rate, buffer pool size vs available RAM, thread cache hit rate, temporary tables on disk, InnoDB history list length, and max connections usage |
 | `mysql_ping` | Test the connection to a MySQL instance. Returns success status and round-trip latency in milliseconds |
 | `mysql_processlist` | Run `SHOW FULL PROCESSLIST` on a MySQL instance. Idle connections (`Command=Sleep`) are excluded by default. Pass `include_idle: true` to show all |
 | `mysql_explain` | Run `EXPLAIN` on a query and return the execution plan as structured rows. Optionally run `EXPLAIN ANALYZE` to include actual execution metrics (warning: executes the query) |
-| `mysql_global_variables` | Run `SHOW GLOBAL VARIABLES` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `innodb%`) |
+| `mysql_variables` | Run `SHOW GLOBAL VARIABLES` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `innodb%`) |
 | `mysql_overflow` | Check AUTO_INCREMENT overflow risk for all tables in a database. Returns current value, max value, percentage used, and remaining capacity per column, sorted by percentage used descending |
 | `mysql_innodb` | Run `SHOW ENGINE INNODB STATUS` and return parsed structured output: semaphores, latest deadlock (queries and victim), transactions, file I/O, log, buffer pool and row operations |
 | `mysql_status` | Run `SHOW GLOBAL STATUS` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `Innodb%`, `Threads%`) |

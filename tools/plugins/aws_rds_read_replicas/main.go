@@ -14,15 +14,15 @@ import (
 )
 
 type Replica struct {
-	Identifier   string  `json:"identifier"`
-	Source       string  `json:"source"`
-	Status       string  `json:"status"`
-	Class        string  `json:"class"`
-	AZ           string  `json:"availability_zone"`
-	MultiAZ      bool    `json:"multi_az"`
-	Engine       string  `json:"engine"`
-	EngineVersion string `json:"engine_version"`
-	ReplicaLagS  float64 `json:"replica_lag_seconds"`
+	Identifier    string  `json:"identifier"`
+	Source        string  `json:"source"`
+	Status        string  `json:"status"`
+	Class         string  `json:"class"`
+	AZ            string  `json:"availability_zone"`
+	MultiAZ       bool    `json:"multi_az"`
+	Engine        string  `json:"engine"`
+	EngineVersion string  `json:"engine_version"`
+	ReplicaLagS   float64 `json:"replica_lag_seconds"`
 }
 
 func replicaLag(cwSvc *cloudwatch.CloudWatch, instanceID string) float64 {

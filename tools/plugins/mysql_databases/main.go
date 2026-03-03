@@ -79,9 +79,9 @@ func init() {
 			}
 
 			return &mcp.CallToolResult{}, map[string]any{
-				"instance":     instanceID,
-				"databases":    databases,
-				"total":        len(databases),
+				"instance":      instanceID,
+				"databases":     databases,
+				"total":         len(databases),
 				"total_size_mb": sql.NullFloat64{Float64: totalMB, Valid: true}.Float64,
 			}, nil
 		},

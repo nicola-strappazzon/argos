@@ -30,9 +30,9 @@ func init() {
 			db, err := mysqldriver.Connect(instanceID)
 			if err != nil {
 				return &mcp.CallToolResult{}, map[string]any{
-					"instance":  instanceID,
-					"success":   false,
-					"error":     err.Error(),
+					"instance":   instanceID,
+					"success":    false,
+					"error":      err.Error(),
 					"latency_ms": 0,
 				}, nil
 			}

@@ -17,6 +17,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_databases"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_describe_table"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_explain"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_health_check"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_innodb"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_overflow"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql_ping"
