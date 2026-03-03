@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/nicola-strappazzon/argos/internal/config/aws"
+	awsmeta "github.com/nicola-strappazzon/argos/internal/meta/aws"
 	mysqldriver "github.com/nicola-strappazzon/argos/internal/drivers/mysql"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
@@ -17,59 +18,6 @@ import (
 )
 
 var reHistoryLength = regexp.MustCompile(`History list length (\d+)`)
-
-// Memory in MB per RDS instance class.
-var instanceClassMemoryMB = map[string]float64{
-	"db.t3.micro":     1024,
-	"db.t3.small":     2048,
-	"db.t3.medium":    4096,
-	"db.t3.large":     8192,
-	"db.t3.xlarge":    16384,
-	"db.t3.2xlarge":   32768,
-	"db.t4g.micro":    1024,
-	"db.t4g.small":    2048,
-	"db.t4g.medium":   4096,
-	"db.t4g.large":    8192,
-	"db.t4g.xlarge":   16384,
-	"db.t4g.2xlarge":  32768,
-	"db.m5.large":     8192,
-	"db.m5.xlarge":    16384,
-	"db.m5.2xlarge":   32768,
-	"db.m5.4xlarge":   65536,
-	"db.m5.8xlarge":   131072,
-	"db.m5.12xlarge":  196608,
-	"db.m5.16xlarge":  262144,
-	"db.m5.24xlarge":  393216,
-	"db.m6g.large":    8192,
-	"db.m6g.xlarge":   16384,
-	"db.m6g.2xlarge":  32768,
-	"db.m6g.4xlarge":  65536,
-	"db.m6g.8xlarge":  131072,
-	"db.m6g.12xlarge": 196608,
-	"db.m6g.16xlarge": 262144,
-	"db.r5.large":     16384,
-	"db.r5.xlarge":    32768,
-	"db.r5.2xlarge":   65536,
-	"db.r5.4xlarge":   131072,
-	"db.r5.8xlarge":   262144,
-	"db.r5.12xlarge":  393216,
-	"db.r5.16xlarge":  524288,
-	"db.r5.24xlarge":  786432,
-	"db.r6g.large":    16384,
-	"db.r6g.xlarge":   32768,
-	"db.r6g.2xlarge":  65536,
-	"db.r6g.4xlarge":  131072,
-	"db.r6g.8xlarge":  262144,
-	"db.r6g.12xlarge": 393216,
-	"db.r6g.16xlarge": 524288,
-	"db.r7g.large":    16384,
-	"db.r7g.xlarge":   32768,
-	"db.r7g.2xlarge":  65536,
-	"db.r7g.4xlarge":  131072,
-	"db.r7g.8xlarge":  262144,
-	"db.r7g.12xlarge": 393216,
-	"db.r7g.16xlarge": 524288,
-}
 
 type Check struct {
 	Name        string  `json:"name"`
@@ -133,7 +81,7 @@ func checkBufferPoolHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 }
 
 func checkBufferPoolSizeVsRAM(ctx context.Context, db *sql.DB, instanceClass string) (*Check, error) {
-	ramMB, ok := instanceClassMemoryMB[instanceClass]
+	ramMB, ok := awsmeta.InstanceClassMemoryMB[instanceClass]
 	if !ok {
 		return nil, nil
 	}
