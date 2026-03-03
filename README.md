@@ -36,6 +36,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `mysql_status` | Run `SHOW GLOBAL STATUS` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `Innodb%`, `Threads%`) |
 | `postgresql_databases` | List databases on a PostgreSQL instance with their size (MB), encoding, collation, owner and connection limit |
 | `postgresql_ping` | Test the connection to a PostgreSQL instance. Returns success status and round-trip latency in milliseconds. Credentials are read from `~/.pgpass` matching the instance identifier against the hostname |
+| `postgresql_tables` | List tables within a PostgreSQL database with detailed info: schema, owner, access method, estimated row count, dead tuples, size (data/index/total), comment and last vacuum/analyze timestamps |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
 | `pt_index_usage` | Run `pt-index-usage` on a downloaded slow query log to find unused indexes. Saves the report to `/tmp/argos/pt-index-usage/`. Optionally filter by database |
 | `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |

@@ -15,9 +15,22 @@ func Connect(instanceID string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	return open(creds.Host, creds.Port, creds.User, creds.Password, creds.Database, instanceID)
+}
 
+// ConnectDB opens a PostgreSQL connection to a specific database on the given instance.
+// Useful when querying objects that require a direct connection to the target database.
+func ConnectDB(instanceID, database string) (*sql.DB, error) {
+	creds, err := psqlconfig.Load(instanceID)
+	if err != nil {
+		return nil, err
+	}
+	return open(creds.Host, creds.Port, creds.User, creds.Password, database, instanceID)
+}
+
+func open(host string, port int, user, password, database, instanceID string) (*sql.DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require",
-		creds.Host, creds.Port, creds.User, creds.Password, creds.Database)
+		host, port, user, password, database)
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
