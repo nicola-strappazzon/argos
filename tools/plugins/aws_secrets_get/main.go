@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nicola-strappazzon/argos/internal/awsconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/aws"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/aws/aws-sdk-go/aws"

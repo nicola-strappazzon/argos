@@ -3,7 +3,7 @@ package aws_rds_instances
 import (
 	"context"
 
-	"github.com/nicola-strappazzon/argos/internal/awsconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/aws"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/aws/aws-sdk-go/aws"

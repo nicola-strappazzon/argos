@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/nicola-strappazzon/argos/internal/mysqlconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/mysql"
 )
 
 // Connect opens a MySQL connection for the given RDS instance identifier.

@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
-	"github.com/nicola-strappazzon/argos/internal/awsconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/aws"
 	mysqldriver "github.com/nicola-strappazzon/argos/internal/drivers/mysql"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 

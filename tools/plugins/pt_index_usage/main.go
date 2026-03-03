@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nicola-strappazzon/argos/internal/mysqlconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/mysql"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"

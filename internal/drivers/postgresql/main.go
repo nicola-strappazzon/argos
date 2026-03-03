@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq"
-	"github.com/nicola-strappazzon/argos/internal/psqlconfig"
+	"github.com/nicola-strappazzon/argos/internal/config/psql"
 )
 
 // Connect opens a PostgreSQL connection for the given RDS instance identifier.
