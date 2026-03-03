@@ -8,6 +8,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.3 // indirect
 	github.com/google/jsonschema-go v0.4.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/lib/pq v1.11.2 // indirect
 	github.com/modelcontextprotocol/go-sdk v1.3.1 // indirect
 	github.com/segmentio/asm v1.1.3 // indirect
 	github.com/segmentio/encoding v0.5.3 // indirect
