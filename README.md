@@ -34,6 +34,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `mysql_overflow` | Check AUTO_INCREMENT overflow risk for all tables in a database. Returns current value, max value, percentage used, and remaining capacity per column, sorted by percentage used descending |
 | `mysql_innodb` | Run `SHOW ENGINE INNODB STATUS` and return parsed structured output: semaphores, latest deadlock (queries and victim), transactions, file I/O, log, buffer pool and row operations |
 | `mysql_status` | Run `SHOW GLOBAL STATUS` on a MySQL instance. Optionally filter by variable name using a `LIKE` pattern (e.g. `Innodb%`, `Threads%`) |
+| `postgresql_ping` | Test the connection to a PostgreSQL instance. Returns success status and round-trip latency in milliseconds. Credentials are read from `~/.pgpass` matching the instance identifier against the hostname |
 | `pt_query_digest` | Run `pt-query-digest` on a downloaded slow query log and save the report to `/tmp/argos/pt-query-digest/` |
 | `pt_index_usage` | Run `pt-index-usage` on a downloaded slow query log to find unused indexes. Saves the report to `/tmp/argos/pt-index-usage/`. Optionally filter by database |
 | `pt_variable_advisor` | Run `pt-variable-advisor` against a MySQL/RDS instance and save the report to `/tmp/argos/pt-variable-advisor/`. The host and port can be obtained from `aws_rds_instances` |
@@ -81,7 +82,7 @@ claude mcp list
 
 ## MySQL Credentials
 
-Tools that connect directly to MySQL (e.g. `pt_variable_advisor`) read credentials from `~/.my.cnf`. Each RDS instance must have its own section named after the instance identifier:
+Tools that connect directly to MySQL read credentials from `~/.my.cnf`. Each RDS instance must have its own section named after the instance identifier:
 
 ```ini
 [com-prd-mysql-general-node01]
@@ -92,6 +93,26 @@ port=3306
 ```
 
 The section name must match exactly the `db_instance_identifier` used in the tool call.
+
+## PostgreSQL Credentials
+
+Tools that connect directly to PostgreSQL read credentials from `~/.pgpass`. Each RDS instance must have its own line using the standard format:
+
+```
+hostname:port:database:username:password
+```
+
+Example:
+
+```
+com-prd-psql-general-node01.xxxxxxxxxxxx.eu-west-1.rds.amazonaws.com:5432:postgres:your_user:your_password
+```
+
+The hostname is matched against the `db_instance_identifier` prefix, so `my-instance` will match `com-prd-psql-general-node01.xxxxxxxxxxxx.eu-west-1.rds.amazonaws.com`. The file must have permissions `600`:
+
+```bash
+chmod 600 ~/.pgpass
+```
 
 ## AWS Permissions
 
