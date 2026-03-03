@@ -28,7 +28,8 @@
       "mcp__argos__mysql_processlist",
       "mcp__argos__mysql_explain",
       "mcp__argos__mysql_health_check",
-      "mcp__argos__postgresql_ping"
+      "mcp__argos__postgresql_ping",
+      "mcp__argos__postgresql_databases"
     ]
   }
 }
