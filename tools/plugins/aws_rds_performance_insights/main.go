@@ -28,7 +28,7 @@ type WaitEvent struct {
 func init() {
 	registry.Add(registry.Property{
 		Name:        "aws_rds_performance_insights",
-		Description: "Get top SQL queries and wait events by DB load from Performance Insights for a given RDS instance.",
+		Description: "Get top SQL queries and wait events by DB load from Performance Insights for MySQL and PostgreSQL RDS instances.",
 		InputSchema: map[string]any{
 			"type": "object",
 			"properties": map[string]any{
@@ -68,15 +68,17 @@ func init() {
 
 			db := dbOutput.DBInstances[0]
 
+			if aws.StringValue(db.Engine) == "docdb" {
+				return &mcp.CallToolResult{}, nil, fmt.Errorf(
+					"Performance Insights dimension groups are not supported for DocumentDB. Use docdb_* tools instead.")
+			}
+
 			if !aws.BoolValue(db.PerformanceInsightsEnabled) {
 				return &mcp.CallToolResult{}, nil, fmt.Errorf("Performance Insights is not enabled for instance %q", instanceID)
 			}
 
 			dbiResourceID := aws.StringValue(db.DbiResourceId)
 			serviceType := "RDS"
-			if aws.StringValue(db.Engine) == "docdb" {
-				serviceType = "DOCDB"
-			}
 
 			piSvc := pi.New(sess)
 			endTime := time.Now()

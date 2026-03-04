@@ -2,6 +2,10 @@ package plugins
 
 import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_health_events"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_collections"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_current_ops"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_databases"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_ping"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_instances"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_rds_log_download"

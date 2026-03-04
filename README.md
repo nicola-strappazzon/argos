@@ -13,7 +13,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_rds_logs` | List available log files for an instance: name, size, and last written timestamp |
 | `aws_rds_log_download` | Download a log file to `/tmp/argos/aws_rds_logs/<instance>/<log_file>` for local analysis |
 | `aws_rds_parameter_groups` | List all user-customized parameters of the parameter group associated with a given RDS instance |
-| `aws_rds_performance_insights` | Get the top 10 SQL queries and top 10 wait events by DB load average from Performance Insights. Accepts a configurable time window in minutes (default: 60). Supports RDS and DocumentDB |
+| `aws_rds_performance_insights` | Get the top 10 SQL queries and top 10 wait events by DB load average from Performance Insights for MySQL and PostgreSQL RDS instances. Accepts a configurable time window in minutes (default: 60) |
 | `aws_secrets_list` | List AWS Secrets Manager secrets. Optionally filter by name |
 | `aws_secrets_get` | Get the value of a secret. If the secret is JSON, returns key-value pairs with optional key filtering |
 | `aws_rds_events` | List recent RDS events (failovers, maintenance, reboots, storage issues) for an instance. Accepts a configurable time window in minutes (default: 1440 = 24 hours) |
@@ -21,6 +21,10 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_rds_pending_maintenance` | List pending maintenance actions across all RDS instances (engine upgrades, OS patches, security updates) |
 | `aws_rds_snapshots` | List RDS snapshots (automated and manual) for a specific instance or all instances. Filterable by snapshot type |
 | `aws_rds_read_replicas` | List RDS read replicas and their replication lag in seconds. Optionally filter by source instance |
+| `docdb_ping` | Test the connection to a DocumentDB instance. Returns success status and round-trip latency in milliseconds. Credentials are read from `~/.docdb` using the instance identifier as the section name |
+| `docdb_databases` | List databases on a DocumentDB instance with their size (MB) and empty status |
+| `docdb_collections` | List collections in a DocumentDB database with stats: document count, size (MB), average object size (bytes), index count and total index size (MB) |
+| `docdb_current_ops` | Show active operations on a DocumentDB instance (equivalent to `db.currentOp()`). Optionally filter by minimum running time with `min_secs` |
 | `mysql_databases` | List databases on a MySQL instance with their size (MB), character set, collation and table count |
 | `mysql_tables` | List tables within a database with engine, size (data/index/free), charset, collation, row format, estimated rows, fragmentation percentage, auto_increment, comment and timestamps |
 | `mysql_describe_table` | Describe the columns of a table: type, nullability, default, charset, collation, key type, extra and comment |
@@ -95,6 +99,24 @@ port=3306
 ```
 
 The section name must match exactly the `db_instance_identifier` used in the tool call.
+
+## DocumentDB Credentials
+
+Tools that connect directly to DocumentDB read credentials from `~/.docdb`. Each instance must have its own section named after the instance identifier:
+
+```ini
+[my-docdb-instance-node01]
+host=my-docdb-instance-node01.xxxxxxxxxxxx.eu-west-1.docdb.amazonaws.com
+port=27017
+user=docdbadmin
+password=your_password
+tls=true
+tls_ca_file=/path/to/rds-combined-ca-bundle.pem
+```
+
+`tls` and `tls_ca_file` are optional. If `tls=true` and no `tls_ca_file` is provided, the system's default CA pool is used.
+
+> **Note:** DocumentDB slow query profiling is not available via the `profile` command. To capture slow queries, enable `profiler=enabled` in the cluster parameter group and configure CloudWatch Logs export for the `profiler` log type.
 
 ## PostgreSQL Credentials
 
