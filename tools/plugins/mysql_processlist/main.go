@@ -25,7 +25,7 @@ type Process struct {
 func init() {
 	registry.Add(registry.Property{
 		Name:        "mysql_processlist",
-		Description: "Run SHOW FULL PROCESSLIST on a MySQL instance. Idle connections (Command=Sleep) are excluded by default.",
+		Description: "Run SHOW FULL PROCESSLIST on a MySQL instance. Idle connections (Command=Sleep) and processes without an active SQL statement are excluded by default.",
 		InputSchema: map[string]any{
 			"type": "object",
 			"properties": map[string]any{
@@ -37,12 +37,22 @@ func init() {
 					"type":        "boolean",
 					"description": "Include idle connections (Command=Sleep). Default: false.",
 				},
+				"min_time_sec": map[string]any{
+					"type":        "integer",
+					"description": "Only include processes running for at least this many seconds. Default: 0 (no filter).",
+				},
+				"include_no_statement": map[string]any{
+					"type":        "boolean",
+					"description": "Include processes without an active SQL statement (INFO is null). Default: false.",
+				},
 			},
 			"required": []string{"db_instance_identifier"},
 		},
 		Function: func(ctx context.Context, req *mcp.CallToolRequest, args map[string]any) (*mcp.CallToolResult, any, error) {
 			instanceID, _ := args["db_instance_identifier"].(string)
 			includeIdle, _ := args["include_idle"].(bool)
+			minTimeSec, _ := args["min_time_sec"].(float64)
+			includeNoStatement, _ := args["include_no_statement"].(bool)
 
 			db, err := mysqldriver.Connect(instanceID)
 			if err != nil {
@@ -74,13 +84,23 @@ func init() {
 				}
 				p.DB = db.String
 				p.State = state.String
-				p.Info = info.String
+				if len(info.String) > 500 {
+					p.Info = info.String[:500]
+				} else {
+					p.Info = info.String
+				}
 
 				if p.Command == "Sleep" {
 					totalIdle++
 					if !includeIdle {
 						continue
 					}
+				}
+				if minTimeSec > 0 && p.Time < int64(minTimeSec) {
+					continue
+				}
+				if !includeNoStatement && p.Info == "" {
+					continue
 				}
 				processes = append(processes, p)
 			}
