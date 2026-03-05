@@ -8,6 +8,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 
 | Tool | Description |
 |---|---|
+| `aws_ec2_list` | List EC2 instances with name, instance ID, private/public IP, availability zone, instance type, and state. Optionally filter by Name tag (case-insensitive substring match) |
 | `aws_rds_instances` | List all RDS instances: engine, version, instance class, status, endpoint, availability zone, MultiAZ, and Performance Insights status |
 | `aws_rds_metrics` | Fetch the last 15 minutes of CloudWatch metrics for any instance: CPU, active connections, freeable memory, free storage, read/write IOPS, read/write latency, and network throughput. Auto-detects namespace (`AWS/RDS` vs `AWS/DocDB`) |
 | `aws_rds_logs` | List available log files for an instance: name, size, and last written timestamp |
@@ -146,6 +147,7 @@ Argos only requires read permissions. The IAM user or role must have:
 {
   "Effect": "Allow",
   "Action": [
+    "ec2:DescribeInstances",
     "rds:DescribeDBInstances",
     "rds:DescribeDBLogFiles",
     "rds:DownloadDBLogFilePortion",
