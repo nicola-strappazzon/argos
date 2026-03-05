@@ -22,10 +22,10 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_rds_pending_maintenance` | List pending maintenance actions across all RDS instances (engine upgrades, OS patches, security updates) |
 | `aws_rds_snapshots` | List RDS snapshots (automated and manual) for a specific instance or all instances. Filterable by snapshot type |
 | `aws_rds_read_replicas` | List RDS read replicas and their replication lag in seconds. Optionally filter by source instance |
-| `docdb_ping` | Test the connection to a DocumentDB instance. Returns success status and round-trip latency in milliseconds. Credentials are read from `~/.docdb` using the instance identifier as the section name |
-| `docdb_databases` | List databases on a DocumentDB instance with their size (MB) and empty status |
-| `docdb_collections` | List collections in a DocumentDB database with stats: document count, size (MB), average object size (bytes), index count and total index size (MB) |
-| `docdb_current_ops` | Show active operations on a DocumentDB instance (equivalent to `db.currentOp()`). Optionally filter by minimum running time with `min_secs` |
+| `aws_docdb_ping` | Test the connection to a DocumentDB instance. Returns success status and round-trip latency in milliseconds. Credentials are read from `~/.docdb` using the instance identifier as the section name |
+| `aws_docdb_databases` | List databases on a DocumentDB instance with their size (MB) and empty status |
+| `aws_docdb_collections` | List collections in a DocumentDB database with stats: document count, size (MB), average object size (bytes), index count and total index size (MB) |
+| `aws_docdb_current_ops` | Show active operations on a DocumentDB instance (equivalent to `db.currentOp()`). Optionally filter by minimum running time with `min_secs` |
 | `mysql_databases` | List databases on a MySQL instance with their size (MB), character set, collation and table count |
 | `mysql_tables` | List tables within a database with engine, size (data/index/free), charset, collation, row format, estimated rows, fragmentation percentage, auto_increment, comment and timestamps |
 | `mysql_describe_table` | Describe the columns of a table: type, nullability, default, charset, collation, key type, extra and comment |

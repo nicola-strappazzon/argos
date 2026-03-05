@@ -1,4 +1,4 @@
-package docdb_current_ops
+package aws_docdb_current_ops
 
 import (
 	"context"
@@ -37,7 +37,7 @@ type currentOpResult struct {
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "docdb_current_ops",
+		Name:        "aws_docdb_current_ops",
 		Description: "Show active operations on a DocumentDB instance (equivalent to db.currentOp()).",
 		InputSchema: map[string]any{
 			"type": "object",

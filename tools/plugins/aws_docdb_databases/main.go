@@ -1,4 +1,4 @@
-package docdb_databases
+package aws_docdb_databases
 
 import (
 	"context"
@@ -30,7 +30,7 @@ type Database struct {
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "docdb_databases",
+		Name:        "aws_docdb_databases",
 		Description: "List databases on a DocumentDB instance with their size and stats.",
 		InputSchema: map[string]any{
 			"type": "object",

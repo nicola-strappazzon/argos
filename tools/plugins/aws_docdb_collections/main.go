@@ -1,4 +1,4 @@
-package docdb_collections
+package aws_docdb_collections
 
 import (
 	"context"
@@ -40,7 +40,7 @@ type Collection struct {
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "docdb_collections",
+		Name:        "aws_docdb_collections",
 		Description: "List collections in a DocumentDB database with stats (indexes, size, count).",
 		InputSchema: map[string]any{
 			"type": "object",

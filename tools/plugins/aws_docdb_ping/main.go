@@ -1,4 +1,4 @@
-package docdb_ping
+package aws_docdb_ping
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 
 func init() {
 	registry.Add(registry.Property{
-		Name:        "docdb_ping",
+		Name:        "aws_docdb_ping",
 		Description: "Test the connection to a DocumentDB instance. Returns success status and round-trip latency in milliseconds.",
 		InputSchema: map[string]any{
 			"type": "object",
