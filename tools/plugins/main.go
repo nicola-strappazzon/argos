@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_ec2_list"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws_health_events"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_collections"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/docdb_current_ops"

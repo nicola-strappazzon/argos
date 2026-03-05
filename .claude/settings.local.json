@@ -31,12 +31,16 @@
       "mcp__argos__postgresql_ping",
       "mcp__argos__postgresql_databases",
       "mcp__argos__postgresql_tables",
+<<<<<<< HEAD
       "mcp__argos__aws_rds_performance_insights",
       "mcp__argos__docdb_ping",
       "mcp__argos__docdb_databases",
       "mcp__argos__docdb_current_ops",
       "mcp__argos__docdb_collections",
       "mcp__argos__docdb_profile"
+=======
+      "mcp__argos__aws_ec2_list"
+>>>>>>> 6a7328f (feat(aws): add aws_ec2_list tool to list and filter EC2 instances)
     ]
   }
 }
