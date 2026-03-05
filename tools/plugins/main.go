@@ -36,7 +36,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/postgresql_databases"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/postgresql_ping"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/postgresql_tables"
-	_ "github.com/nicola-strappazzon/argos/tools/plugins/pt_index_usage"
-	_ "github.com/nicola-strappazzon/argos/tools/plugins/pt_query_digest"
-	_ "github.com/nicola-strappazzon/argos/tools/plugins/pt_variable_advisor"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/percona/pt_index_usage"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/percona/pt_query_digest"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/percona/pt_variable_advisor"
 )
