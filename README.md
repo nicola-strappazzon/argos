@@ -11,12 +11,12 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 
 Argos is organized into four tool groups. Each group covers a specific technology and has its own configuration and credentials. Click the link in the table to see the full list of available tools and setup instructions.
 
-| Group | Description | Docs |
-|---|---|---|
-| **AWS** | Inspect EC2 instances, RDS and DocumentDB clusters, CloudWatch metrics, slow query logs, parameter groups, Performance Insights, snapshots, read replicas, pending maintenance, health dashboard alerts, and Secrets Manager | [doc/aws.md](doc/aws.md) |
-| **MySQL** | Connect directly to MySQL instances: explore databases, tables, indexes, and foreign keys; inspect processes, InnoDB internals, global variables and status; run health checks, performance tuning analysis, and schema validation | [doc/mysql.md](doc/mysql.md) |
-| **PostgreSQL** | Connect directly to PostgreSQL instances: list databases and tables with size, bloat, and vacuum statistics | [doc/postgresql.md](doc/postgresql.md) |
-| **Percona** | Run Percona Toolkit utilities against slow query logs and live instances: query digest, index usage analysis, and variable tuning advice | [doc/percona.md](doc/percona.md) |
+| Group | Description |
+|---|---|
+| [**AWS**](doc/aws.md) | Inspect EC2 instances, RDS and DocumentDB clusters, CloudWatch metrics, slow query logs, parameter groups, Performance Insights, snapshots, read replicas, pending maintenance, health dashboard alerts, and Secrets Manager |
+| [**MySQL**](doc/mysql.md) | Connect directly to MySQL instances: explore databases, tables, indexes, and foreign keys; inspect processes, InnoDB internals, global variables and status; run health checks, performance tuning analysis, and schema validation |
+| [**PostgreSQL**](doc/postgresql.md) | Connect directly to PostgreSQL instances: list databases and tables with size, bloat, and vacuum statistics |
+| [**Percona**](doc/percona.md) | Run Percona Toolkit utilities against slow query logs and live instances: query digest, index usage analysis, and variable tuning advice |
 
 ## Requirements
 
