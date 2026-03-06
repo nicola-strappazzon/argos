@@ -45,6 +45,55 @@ func mb(bytes float64) float64 {
 	return bytes / 1024 / 1024
 }
 
+// bestChunkSize finds the chunk_size (in bytes) closest to the 3.5% midpoint of
+// the 2–5% optimal range that satisfies both constraints:
+//  1. chunk_size is a multiple of 1 MB
+//  2. pool_size is exactly divisible by (instances × chunk_size)
+//
+// It first searches candidates within the 2–5% range; if none exist (e.g. the
+// pool is too small relative to the number of instances), it falls back to the
+// valid candidate closest to the 3.5% target.
+func bestChunkSize(poolSize, instances float64) float64 {
+	oneMB := float64(1024 * 1024)
+	poolPerInstance := poolSize / instances
+	target := poolSize * 0.035 // 3.5% midpoint
+
+	var bestInRange, bestFallback float64
+	bestInRangeDiff := math.MaxFloat64
+	bestFallbackDiff := math.MaxFloat64
+
+	for n := 1; n <= 10000; n++ {
+		// chunk must divide poolPerInstance exactly
+		if math.Mod(poolPerInstance, float64(n)) != 0 {
+			continue
+		}
+		chunk := poolPerInstance / float64(n)
+		// chunk must be a multiple of 1 MB
+		if math.Mod(chunk, oneMB) != 0 {
+			continue
+		}
+		pct := chunk * 100.0 / poolSize
+		diff := math.Abs(chunk - target)
+
+		if pct >= 2 && pct <= 5 {
+			if diff < bestInRangeDiff {
+				bestInRangeDiff = diff
+				bestInRange = chunk
+			}
+		} else {
+			if diff < bestFallbackDiff {
+				bestFallbackDiff = diff
+				bestFallback = chunk
+			}
+		}
+	}
+
+	if bestInRange > 0 {
+		return bestInRange
+	}
+	return bestFallback
+}
+
 func checkInnoDBBufferPoolChunkSize(ctx context.Context, db *sql.DB) (*Recommendation, error) {
 	vars, err := queryVars(ctx, db, `SHOW GLOBAL VARIABLES WHERE Variable_name IN
 		('innodb_buffer_pool_size', 'innodb_buffer_pool_instances', 'innodb_buffer_pool_chunk_size')`)
@@ -69,11 +118,9 @@ func checkInnoDBBufferPoolChunkSize(ctx context.Context, db *sql.DB) (*Recommend
 		mb(poolSize), instances, mb(chunkSize),
 	)
 
-	// Recommended chunk_size: largest multiple of 1 MB that evenly divides
-	// (pool_size / instances), ensuring 1 chunk per instance and perfect alignment.
-	oneMB := float64(1024 * 1024)
-	recommendedChunk := math.Floor(poolSize/instances/oneMB) * oneMB
+	recommendedChunk := bestChunkSize(poolSize, instances)
 	recommendedPct := recommendedChunk * 100.0 / poolSize
+	chunksPerInstance := poolSize / (instances * recommendedChunk)
 
 	var status, description, recommendedValue string
 
@@ -85,7 +132,10 @@ func checkInnoDBBufferPoolChunkSize(ctx context.Context, db *sql.DB) (*Recommend
 				"MySQL will silently auto-adjust the buffer pool upward to the next valid multiple, so the actual memory used differs from what is configured.",
 			mb(poolSize), instances, mb(chunkSize), mb(unit),
 		)
-		recommendedValue = fmt.Sprintf("innodb_buffer_pool_chunk_size=%.0f MB (1 chunk per instance, perfectly aligned)", mb(recommendedChunk))
+		recommendedValue = fmt.Sprintf(
+			"innodb_buffer_pool_chunk_size=%.0f MB (%.2f%% of buffer pool, %.0f chunk(s) per instance)",
+			mb(recommendedChunk), recommendedPct, chunksPerInstance,
+		)
 
 	case chunkPct < 2:
 		status = "warning"
@@ -94,7 +144,10 @@ func checkInnoDBBufferPoolChunkSize(ctx context.Context, db *sql.DB) (*Recommend
 				"Too many small chunks increase memory management overhead during buffer pool resizing operations.",
 			mb(chunkSize), chunkPct, mb(poolSize),
 		)
-		recommendedValue = fmt.Sprintf("innodb_buffer_pool_chunk_size=%.0f MB (%.2f%% of buffer pool, 1 chunk per instance)", mb(recommendedChunk), recommendedPct)
+		recommendedValue = fmt.Sprintf(
+			"innodb_buffer_pool_chunk_size=%.0f MB (%.2f%% of buffer pool, %.0f chunk(s) per instance)",
+			mb(recommendedChunk), recommendedPct, chunksPerInstance,
+		)
 
 	case chunkPct > 5:
 		status = "warning"
@@ -103,7 +156,10 @@ func checkInnoDBBufferPoolChunkSize(ctx context.Context, db *sql.DB) (*Recommend
 				"Large chunks make online buffer pool resizing coarser and less flexible.",
 			mb(chunkSize), chunkPct, mb(poolSize),
 		)
-		recommendedValue = fmt.Sprintf("innodb_buffer_pool_chunk_size=%.0f MB (%.2f%% of buffer pool, 1 chunk per instance)", mb(recommendedChunk), recommendedPct)
+		recommendedValue = fmt.Sprintf(
+			"innodb_buffer_pool_chunk_size=%.0f MB (%.2f%% of buffer pool, %.0f chunk(s) per instance)",
+			mb(recommendedChunk), recommendedPct, chunksPerInstance,
+		)
 
 	default:
 		status = "ok"
