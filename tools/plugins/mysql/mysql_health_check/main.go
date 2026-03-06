@@ -157,6 +157,38 @@ func checkThreadCacheHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkThreadCacheRatio(ctx context.Context, db *sql.DB) (*Check, error) {
+	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Threads_cached', 'Threads_created')")
+	if err != nil {
+		return nil, fmt.Errorf("thread cache ratio: %w", err)
+	}
+
+	threadsCreated := vars["Threads_created"]
+	if threadsCreated == 0 {
+		return nil, nil
+	}
+
+	ratio := vars["Threads_cached"] * 100.0 / threadsCreated
+
+	var status, description string
+	if ratio < 10 {
+		status = "warning"
+		description = fmt.Sprintf("Thread Cache Ratio is %.2f%%. The thread cache is not providing significant performance benefits. Increase thread_cache_size to improve thread reuse.", ratio)
+	} else {
+		status = "ok"
+		description = fmt.Sprintf("Thread Cache Ratio is %.2f%%. The thread cache is functioning effectively and reducing thread creation overhead.", ratio)
+	}
+
+	return &Check{
+		Name:        "thread_cache_ratio",
+		Value:       ratio,
+		Unit:        "%",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok >= 10%, warning < 10%",
+	}, nil
+}
+
 func checkTemporaryTablesOnDisk(ctx context.Context, db *sql.DB) (*Check, error) {
 	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Created_tmp_disk_tables', 'Created_tmp_tables')")
 	if err != nil {
@@ -513,6 +545,7 @@ func init() {
 				func() (*Check, error) { return checkBufferPoolHitRate(ctx, db) },
 				func() (*Check, error) { return checkBufferPoolSizeVsRAM(ctx, db, instanceClass) },
 				func() (*Check, error) { return checkThreadCacheHitRate(ctx, db) },
+				func() (*Check, error) { return checkThreadCacheRatio(ctx, db) },
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
