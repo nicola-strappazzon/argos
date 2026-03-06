@@ -1,4 +1,4 @@
-# Argos — Personal DBA Assistant
+# Argos — Personal DataBase Assistant
 
 All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server written in Go that gives Claude direct, read-only access to your AWS RDS infrastructure.
 

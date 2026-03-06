@@ -38,7 +38,11 @@
       "mcp__argos__postgresql_tables",
       "mcp__argos__pt_index_usage",
       "mcp__argos__pt_query_digest",
-      "mcp__argos__pt_variable_advisor"
+      "mcp__argos__pt_variable_advisor",
+      "mcp__argos__aws_docdb_ping",
+      "mcp__argos__aws_docdb_databases",
+      "mcp__argos__aws_docdb_current_ops",
+      "mcp__argos__aws_docdb_server_status"
     ]
   }
 }
