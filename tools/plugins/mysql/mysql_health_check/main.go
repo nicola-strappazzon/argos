@@ -237,6 +237,43 @@ func checkHistoryListLength(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkOpenFilesUtilization(ctx context.Context, db *sql.DB) (*Check, error) {
+	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name = 'Open_files'")
+	if err != nil {
+		return nil, fmt.Errorf("open files utilization: %w", err)
+	}
+
+	configVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL VARIABLES WHERE Variable_name = 'open_files_limit'")
+	if err != nil {
+		return nil, fmt.Errorf("open files utilization: %w", err)
+	}
+
+	limit := configVars["open_files_limit"]
+	if limit == 0 {
+		return nil, nil
+	}
+
+	ratio := statusVars["Open_files"] * 100 / limit
+
+	var status, description string
+	if ratio >= 85 {
+		status = "warning"
+		description = fmt.Sprintf("Open Files Utilization is %.2f%% (%.0f / %.0f). Approaching or exceeding the open files limit. Consider optimizing file operations or increasing open_files_limit.", ratio, statusVars["Open_files"], limit)
+	} else {
+		status = "ok"
+		description = fmt.Sprintf("Open Files Utilization is %.2f%% (%.0f / %.0f). Sufficient headroom before reaching the open files limit.", ratio, statusVars["Open_files"], limit)
+	}
+
+	return &Check{
+		Name:        "open_files_utilization",
+		Value:       ratio,
+		Unit:        "%",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok < 85%, warning >= 85%",
+	}, nil
+}
+
 func checkFlushingLogs(ctx context.Context, db *sql.DB) (*Check, error) {
 	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Innodb_log_waits', 'Innodb_log_writes')")
 	if err != nil {
@@ -442,6 +479,7 @@ func init() {
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
+				func() (*Check, error) { return checkOpenFilesUtilization(ctx, db) },
 				func() (*Check, error) { return checkFlushingLogs(ctx, db) },
 				func() (*Check, error) { return checkSortMergePassesRatio(ctx, db) },
 				func() (*Check, error) { return checkInnoDBRedoLog(ctx, db) },
