@@ -132,13 +132,18 @@ func checkThreadCacheHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 		return nil, nil
 	}
 
-	hitRate := 100 - (vars["Threads_created"] * 100 / connections)
-	status := "ok"
-	var description string
-	if hitRate <= 90 {
+	hitRate := 100.0 - (vars["Threads_created"] * 100.0 / connections)
+
+	var status, description string
+	switch {
+	case hitRate < 50:
+		status = "critical"
+		description = fmt.Sprintf("Thread cache hit rate is %.2f%%. The server is creating a high number of new threads instead of reusing cached ones. Increase thread_cache_size immediately.", hitRate)
+	case hitRate < 90:
 		status = "warning"
-		description = fmt.Sprintf("Thread cache hit rate is %.2f%%. Many threads are being created instead of reused. Consider increasing thread_cache_size.", hitRate)
-	} else {
+		description = fmt.Sprintf("Thread cache hit rate is %.2f%%. Thread reuse is suboptimal. Consider increasing thread_cache_size.", hitRate)
+	default:
+		status = "ok"
 		description = fmt.Sprintf("Thread cache hit rate is %.2f%%. Most connections reuse cached threads efficiently.", hitRate)
 	}
 
@@ -148,7 +153,7 @@ func checkThreadCacheHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 		Unit:        "%",
 		Status:      status,
 		Description: description,
-		Threshold:   "ok > 90%, warning <= 90%",
+		Threshold:   "ok >= 90%, warning 50–90%, critical < 50%",
 	}, nil
 }
 
