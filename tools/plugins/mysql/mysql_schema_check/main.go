@@ -65,13 +65,65 @@ func checkDeprecatedEngine(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkMissingPrimaryKey(ctx context.Context, db *sql.DB) (*Check, error) {
+	rows, err := db.QueryContext(ctx, `
+		SELECT t.TABLE_SCHEMA, t.TABLE_NAME
+		FROM information_schema.TABLES t
+		LEFT JOIN information_schema.TABLE_CONSTRAINTS c
+			ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
+			AND c.TABLE_NAME = t.TABLE_NAME
+			AND c.CONSTRAINT_TYPE = 'PRIMARY KEY'
+		WHERE t.TABLE_TYPE = 'BASE TABLE'
+		  AND t.TABLE_SCHEMA NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys')
+		  AND c.CONSTRAINT_NAME IS NULL
+		ORDER BY t.TABLE_SCHEMA, t.TABLE_NAME`)
+	if err != nil {
+		return nil, fmt.Errorf("missing primary key check: %w", err)
+	}
+	defer rows.Close()
+
+	var tables []string
+	for rows.Next() {
+		var schema, table string
+		if err := rows.Scan(&schema, &table); err != nil {
+			return nil, fmt.Errorf("missing primary key check: %w", err)
+		}
+		tables = append(tables, schema+"."+table)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("missing primary key check: %w", err)
+	}
+
+	if len(tables) > 0 {
+		return &Check{
+			Name:   "missing_primary_key",
+			Status: "warning",
+			Description: fmt.Sprintf(
+				"%d table(s) are missing a primary key: %s. "+
+					"Without a primary key, MySQL creates an internal hidden one that cannot be used by queries or tools. "+
+					"Missing primary keys slow down row-based and mixed replication, prevent tools like pt-online-schema-change from working, "+
+					"and make data archiving and purging difficult. "+
+					"Add a primary key with: ALTER TABLE <table_name> ADD PRIMARY KEY (<column>);",
+				len(tables), strings.Join(tables, ", ")),
+			Tables: tables,
+		}, nil
+	}
+
+	return &Check{
+		Name:        "missing_primary_key",
+		Status:      "ok",
+		Description: "All user tables have a primary key defined.",
+	}, nil
+}
+
 func init() {
 	registry.Add(registry.Property{
 		Name: "mysql_schema_check",
 		Description: `Run schema-level checks on a MySQL instance. Returns structural issues with status (ok/warning) and remediation guidance.
 
 Checks include:
-- Deprecated Table Engine: detects tables still using MyISAM. MyISAM lacks transactions, crash recovery, and row-level locking. InnoDB is the recommended engine due to ACID compliance, automatic crash recovery, row-level locking for high concurrency, and active development support from the MySQL community.`,
+- Deprecated Table Engine: detects tables still using MyISAM. MyISAM lacks transactions, crash recovery, and row-level locking. InnoDB is the recommended engine due to ACID compliance, automatic crash recovery, row-level locking for high concurrency, and active development support from the MySQL community.
+- Missing Primary Key: detects tables without a primary key. Missing primary keys hide an internal key from queries and tools, degrade row-based replication performance, and break schema change utilities like pt-online-schema-change.`,
 		InputSchema: map[string]any{
 			"type": "object",
 			"properties": map[string]any{
