@@ -40,4 +40,3 @@ func Connect(instanceID string) (*sql.DB, error) {
 
 	return db, nil
 }
-

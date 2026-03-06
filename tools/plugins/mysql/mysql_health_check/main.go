@@ -10,8 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/nicola-strappazzon/argos/internal/config/aws"
-	awsmeta "github.com/nicola-strappazzon/argos/internal/meta/aws"
 	mysqldriver "github.com/nicola-strappazzon/argos/internal/drivers/mysql"
+	awsmeta "github.com/nicola-strappazzon/argos/internal/meta/aws"
 	"github.com/nicola-strappazzon/argos/tools/registry"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
