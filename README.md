@@ -103,6 +103,30 @@ port=3306
 
 The section name must match exactly the `db_instance_identifier` used in the tool call.
 
+### Connecting via SSH tunnel
+
+If the MySQL instance is not directly reachable, you can route the connection through an SSH bastion host by adding `ssh_*` fields to the same section:
+
+```ini
+[com-prd-mysql-general-node01]
+host=com-prd-mysql-general-node01.xxxxxxxxxxxx.eu-west-1.rds.amazonaws.com
+user=your_user
+password=your_password
+port=3306
+ssh_host=bastion.example.com
+ssh_user=ec2-user
+ssh_key=~/.ssh/id_rsa
+```
+
+| Field | Required | Default | Description |
+|---|---|---|---|
+| `ssh_host` | Yes | — | Bastion host address |
+| `ssh_user` | Yes | — | SSH username |
+| `ssh_key` | Yes | — | Path to the private key file. Supports `~/` expansion |
+| `ssh_port` | No | `22` | SSH port |
+
+The tunnel is established in-process — no local port is opened and no external `ssh` process is required. If `ssh_host` is omitted, the connection is made directly as usual.
+
 ## DocumentDB Credentials
 
 Tools that connect directly to DocumentDB read credentials from `~/.docdb`. Each instance must have its own section named after the instance identifier:

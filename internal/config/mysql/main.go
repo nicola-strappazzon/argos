@@ -8,11 +8,19 @@ import (
 	"strings"
 )
 
+type SSHConfig struct {
+	Host string
+	Port int
+	User string
+	Key  string
+}
+
 type Credentials struct {
 	Host     string
 	Port     int
 	User     string
 	Password string
+	SSH      *SSHConfig
 }
 
 // Load reads credentials for the given section name from ~/.my.cnf.
@@ -31,6 +39,7 @@ func Load(section string) (*Credentials, error) {
 	defer f.Close()
 
 	creds := &Credentials{Port: 3306}
+	ssh := &SSHConfig{Port: 22}
 	inSection := false
 	scanner := bufio.NewScanner(f)
 
@@ -67,7 +76,19 @@ func Load(section string) (*Credentials, error) {
 			creds.User = value
 		case "password":
 			creds.Password = value
+		case "ssh_host":
+			ssh.Host = value
+		case "ssh_port":
+			fmt.Sscanf(value, "%d", &ssh.Port)
+		case "ssh_user":
+			ssh.User = value
+		case "ssh_key":
+			ssh.Key = value
 		}
+	}
+
+	if ssh.Host != "" {
+		creds.SSH = ssh
 	}
 
 	if err := scanner.Err(); err != nil {
