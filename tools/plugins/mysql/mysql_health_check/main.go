@@ -237,6 +237,42 @@ func checkHistoryListLength(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkFlushingLogs(ctx context.Context, db *sql.DB) (*Check, error) {
+	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Innodb_log_waits', 'Innodb_log_writes')")
+	if err != nil {
+		return nil, fmt.Errorf("flushing logs: %w", err)
+	}
+
+	logWrites := vars["Innodb_log_writes"]
+	if logWrites == 0 {
+		return nil, nil
+	}
+
+	ratio := vars["Innodb_log_waits"] * 100 / logWrites
+
+	var status, description string
+	switch {
+	case ratio > 20:
+		status = "critical"
+		description = fmt.Sprintf("Flushing Logs ratio is %.2f%%. High number of waits for log buffer space, indicating significant InnoDB log buffer pressure. Consider increasing innodb_log_buffer_size.", ratio)
+	case ratio >= 5:
+		status = "warning"
+		description = fmt.Sprintf("Flushing Logs ratio is %.2f%%. Moderate waits for log buffer space. Monitor closely and consider increasing innodb_log_buffer_size if the trend worsens.", ratio)
+	default:
+		status = "ok"
+		description = fmt.Sprintf("Flushing Logs ratio is %.2f%%. InnoDB log buffer is operating efficiently with few waits.", ratio)
+	}
+
+	return &Check{
+		Name:        "flushing_logs",
+		Value:       ratio,
+		Unit:        "%",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok < 5%, warning 5–20%, critical > 20%",
+	}, nil
+}
+
 func checkSortMergePassesRatio(ctx context.Context, db *sql.DB) (*Check, error) {
 	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Sort_merge_passes', 'Sort_scan', 'Sort_range')")
 	if err != nil {
@@ -406,6 +442,7 @@ func init() {
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
+				func() (*Check, error) { return checkFlushingLogs(ctx, db) },
 				func() (*Check, error) { return checkSortMergePassesRatio(ctx, db) },
 				func() (*Check, error) { return checkInnoDBRedoLog(ctx, db) },
 			}
