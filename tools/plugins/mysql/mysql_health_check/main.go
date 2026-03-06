@@ -237,6 +237,38 @@ func checkHistoryListLength(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkInnoDBDirtyPagesRatio(ctx context.Context, db *sql.DB) (*Check, error) {
+	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Innodb_buffer_pool_pages_dirty', 'Innodb_buffer_pool_pages_total')")
+	if err != nil {
+		return nil, fmt.Errorf("innodb dirty pages ratio: %w", err)
+	}
+
+	total := vars["Innodb_buffer_pool_pages_total"]
+	if total == 0 {
+		return nil, nil
+	}
+
+	ratio := vars["Innodb_buffer_pool_pages_dirty"] / total * 100
+
+	var status, description string
+	if ratio >= 75 {
+		status = "warning"
+		description = fmt.Sprintf("InnoDB Dirty Pages Ratio is %.2f%%. High proportion of dirty pages in the buffer pool. The system may be struggling to flush pages to disk promptly. Consider tuning innodb_io_capacity or innodb_flush_method.", ratio)
+	} else {
+		status = "ok"
+		description = fmt.Sprintf("InnoDB Dirty Pages Ratio is %.2f%%. The buffer pool is effectively managing dirty page flushing.", ratio)
+	}
+
+	return &Check{
+		Name:        "innodb_dirty_pages_ratio",
+		Value:       ratio,
+		Unit:        "%",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok < 75%, warning >= 75%",
+	}, nil
+}
+
 func checkOpenFilesUtilization(ctx context.Context, db *sql.DB) (*Check, error) {
 	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name = 'Open_files'")
 	if err != nil {
@@ -479,6 +511,7 @@ func init() {
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
+				func() (*Check, error) { return checkInnoDBDirtyPagesRatio(ctx, db) },
 				func() (*Check, error) { return checkOpenFilesUtilization(ctx, db) },
 				func() (*Check, error) { return checkFlushingLogs(ctx, db) },
 				func() (*Check, error) { return checkSortMergePassesRatio(ctx, db) },
