@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
@@ -423,50 +422,6 @@ func checkSortMergePassesRatio(ctx context.Context, db *sql.DB) (*Check, error) 
 	}, nil
 }
 
-func checkMyISAMTables(ctx context.Context, db *sql.DB) (*Check, error) {
-	rows, err := db.QueryContext(ctx, `
-		SELECT TABLE_SCHEMA, TABLE_NAME
-		FROM information_schema.TABLES
-		WHERE ENGINE = 'MyISAM'
-		  AND TABLE_SCHEMA NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys')
-		ORDER BY TABLE_SCHEMA, TABLE_NAME`)
-	if err != nil {
-		return nil, fmt.Errorf("myisam tables: %w", err)
-	}
-	defer rows.Close()
-
-	var tables []string
-	for rows.Next() {
-		var schema, table string
-		if err := rows.Scan(&schema, &table); err != nil {
-			return nil, fmt.Errorf("myisam tables: %w", err)
-		}
-		tables = append(tables, schema+"."+table)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("myisam tables: %w", err)
-	}
-
-	count := float64(len(tables))
-	var status, description string
-	if count > 0 {
-		status = "warning"
-		description = fmt.Sprintf("%d table(s) are using the MyISAM engine: %s. MyISAM does not support transactions or crash recovery. Migrate to InnoDB with: ALTER TABLE <name> ENGINE=InnoDB.", int(count), strings.Join(tables, ", "))
-	} else {
-		status = "ok"
-		description = "No user tables are using the MyISAM engine. All tables use InnoDB or another transactional engine."
-	}
-
-	return &Check{
-		Name:        "myisam_tables",
-		Value:       count,
-		Unit:        "tables",
-		Status:      status,
-		Description: description,
-		Threshold:   "ok = 0 tables, warning > 0 tables",
-	}, nil
-}
-
 func checkInnoDBRedoLog(ctx context.Context, db *sql.DB) (*Check, error) {
 	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Uptime', 'Innodb_os_log_written')")
 	if err != nil {
@@ -606,7 +561,6 @@ func init() {
 				func() (*Check, error) { return checkFlushingLogs(ctx, db) },
 				func() (*Check, error) { return checkSortMergePassesRatio(ctx, db) },
 				func() (*Check, error) { return checkInnoDBRedoLog(ctx, db) },
-				func() (*Check, error) { return checkMyISAMTables(ctx, db) },
 			}
 
 			var checks []Check
