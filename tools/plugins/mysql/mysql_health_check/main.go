@@ -237,6 +237,42 @@ func checkHistoryListLength(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkSortMergePassesRatio(ctx context.Context, db *sql.DB) (*Check, error) {
+	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Sort_merge_passes', 'Sort_scan', 'Sort_range')")
+	if err != nil {
+		return nil, fmt.Errorf("sort merge passes ratio: %w", err)
+	}
+
+	total := vars["Sort_scan"] + vars["Sort_range"]
+	if total == 0 {
+		return nil, nil
+	}
+
+	ratio := vars["Sort_merge_passes"] * 100.0 / total
+
+	var status, description string
+	switch {
+	case ratio >= 25:
+		status = "critical"
+		description = fmt.Sprintf("Sort Merge Passes Ratio is %.2f%%. Sorting performance is severely degraded. Increase sort_buffer_size and review queries with ORDER BY / GROUP BY lacking proper indexes.", ratio)
+	case ratio >= 10:
+		status = "warning"
+		description = fmt.Sprintf("Sort Merge Passes Ratio is %.2f%%. A significant proportion of sort operations require merge passes. Consider increasing sort_buffer_size or adding indexes to avoid filesorts.", ratio)
+	default:
+		status = "ok"
+		description = fmt.Sprintf("Sort Merge Passes Ratio is %.2f%%. Sorting operations are efficient with few merge passes required.", ratio)
+	}
+
+	return &Check{
+		Name:        "sort_merge_passes_ratio",
+		Value:       ratio,
+		Unit:        "%",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok < 10%, warning >= 10%, critical >= 25%",
+	}, nil
+}
+
 func checkInnoDBRedoLog(ctx context.Context, db *sql.DB) (*Check, error) {
 	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Uptime', 'Innodb_os_log_written')")
 	if err != nil {
@@ -370,6 +406,7 @@ func init() {
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
+				func() (*Check, error) { return checkSortMergePassesRatio(ctx, db) },
 				func() (*Check, error) { return checkInnoDBRedoLog(ctx, db) },
 			}
 
