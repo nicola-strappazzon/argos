@@ -4,6 +4,9 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 
 **It never writes, modifies, or deletes anything.** Every tool is strictly observability: it reads from AWS APIs and CloudWatch, and writes only to your local `/tmp` directory when downloading log files for analysis.
 
+> [!WARNING]
+> **This tool surfaces information — it does not fix problems.** Interpreting the output and deciding what to do requires solid database knowledge. Blindly applying recommendations without understanding the underlying issue can make things worse or cause outages. Before making any change to a production system, research the topic thoroughly, validate in a non-production environment, and consult a database expert if in doubt. **I am not responsible for any damage, data loss, or downtime resulting from actions taken based on this tool's output.**
+
 ## Tools
 
 | Tool | Description |
