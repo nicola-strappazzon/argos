@@ -51,7 +51,7 @@ func queryStatusVars(ctx context.Context, db *sql.DB, query string) (map[string]
 }
 
 func checkBufferPoolHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
-	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_read%'")
+	vars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Innodb_buffer_pool_read_requests', 'Innodb_buffer_pool_reads')")
 	if err != nil {
 		return nil, fmt.Errorf("buffer pool hit rate: %w", err)
 	}
@@ -62,12 +62,19 @@ func checkBufferPoolHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 		return nil, nil
 	}
 
-	hitRate := (readRequests - reads) * 100 / readRequests
-	status := "ok"
-	if hitRate < 95 {
+	hitRate := (readRequests - reads) * 100.0 / readRequests
+
+	var status, description string
+	switch {
+	case hitRate < 90:
 		status = "critical"
-	} else if hitRate < 99 {
+		description = fmt.Sprintf("InnoDB buffer pool hit rate is %.2f%%. Most reads are going to disk. The buffer pool is likely undersized for the working data set. Increase innodb_buffer_pool_size.", hitRate)
+	case hitRate < 99:
 		status = "warning"
+		description = fmt.Sprintf("InnoDB buffer pool hit rate is %.2f%%. A notable portion of reads require disk I/O. Consider increasing innodb_buffer_pool_size to improve cache efficiency.", hitRate)
+	default:
+		status = "ok"
+		description = fmt.Sprintf("InnoDB buffer pool hit rate is %.2f%%. Almost all reads are served from memory with minimal disk I/O.", hitRate)
 	}
 
 	return &Check{
@@ -75,8 +82,8 @@ func checkBufferPoolHitRate(ctx context.Context, db *sql.DB) (*Check, error) {
 		Value:       hitRate,
 		Unit:        "%",
 		Status:      status,
-		Description: "Percentage of InnoDB page reads served from the buffer pool without disk I/O. Low values indicate the buffer pool is too small.",
-		Threshold:   "ok >= 99%, warning >= 95%, critical < 95%",
+		Description: description,
+		Threshold:   "ok >= 99%, warning 90–99%, critical < 90%",
 	}, nil
 }
 
