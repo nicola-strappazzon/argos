@@ -9,6 +9,8 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 
 ## Tools
 
+Argos is organized into four tool groups. Each group covers a specific technology and has its own configuration and credentials. Click the link in the table to see the full list of available tools and setup instructions.
+
 | Group | Description | Docs |
 |---|---|---|
 | **AWS** | Inspect EC2 instances, RDS and DocumentDB clusters, CloudWatch metrics, slow query logs, parameter groups, Performance Insights, snapshots, read replicas, pending maintenance, health dashboard alerts, and Secrets Manager | [doc/aws.md](doc/aws.md) |
