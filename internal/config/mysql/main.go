@@ -1,11 +1,11 @@
 package mysqlconfig
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/nicola-strappazzon/argos/internal/cnf"
 )
 
 type SSHConfig struct {
@@ -32,67 +32,30 @@ func Load(section string) (*Credentials, error) {
 	}
 
 	path := filepath.Join(home, ".my.cnf")
-	f, err := os.Open(path)
+	keys, err := cnf.Load(path, section)
 	if err != nil {
-		return nil, fmt.Errorf("opening ~/.my.cnf: %w", err)
+		return nil, err
 	}
-	defer f.Close()
 
 	creds := &Credentials{Port: 3306}
 	ssh := &SSHConfig{Port: 22}
-	inSection := false
-	scanner := bufio.NewScanner(f)
 
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+	creds.Host = keys["host"]
+	creds.User = keys["user"]
+	creds.Password = keys["password"]
+	if v, ok := keys["port"]; ok {
+		fmt.Sscanf(v, "%d", &creds.Port)
+	}
 
-		if line == "" || strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") {
-			continue
-		}
-
-		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
-			inSection = line[1:len(line)-1] == section
-			continue
-		}
-
-		if !inSection {
-			continue
-		}
-
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) != 2 {
-			continue
-		}
-
-		key := strings.TrimSpace(parts[0])
-		value := strings.TrimSpace(parts[1])
-
-		switch key {
-		case "host":
-			creds.Host = value
-		case "port":
-			fmt.Sscanf(value, "%d", &creds.Port)
-		case "user":
-			creds.User = value
-		case "password":
-			creds.Password = value
-		case "ssh_host":
-			ssh.Host = value
-		case "ssh_port":
-			fmt.Sscanf(value, "%d", &ssh.Port)
-		case "ssh_user":
-			ssh.User = value
-		case "ssh_key":
-			ssh.Key = value
-		}
+	ssh.Host = keys["ssh_host"]
+	ssh.User = keys["ssh_user"]
+	ssh.Key = keys["ssh_key"]
+	if v, ok := keys["ssh_port"]; ok {
+		fmt.Sscanf(v, "%d", &ssh.Port)
 	}
 
 	if ssh.Host != "" {
 		creds.SSH = ssh
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("reading ~/.my.cnf: %w", err)
 	}
 
 	if creds.User == "" {
