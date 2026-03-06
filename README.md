@@ -6,6 +6,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 
 > [!WARNING]
 > **Diagnostic output only — not a substitute for expertise.** Acting on this tool's output without a solid understanding of database internals can cause data loss or outages. Always validate changes in a non-production environment and review them with a qualified DBA before applying anything to production.
+>
 > Use at your own risk.
 
 ## Tools
