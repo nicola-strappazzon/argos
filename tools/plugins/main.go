@@ -23,6 +23,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_describe_table"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_explain"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_health_check"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_performance"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_innodb"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_overflow"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_ping"
