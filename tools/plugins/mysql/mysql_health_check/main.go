@@ -237,6 +237,50 @@ func checkHistoryListLength(ctx context.Context, db *sql.DB) (*Check, error) {
 	}, nil
 }
 
+func checkInnoDBRedoLog(ctx context.Context, db *sql.DB) (*Check, error) {
+	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name IN ('Uptime', 'Innodb_os_log_written')")
+	if err != nil {
+		return nil, fmt.Errorf("innodb redo log: %w", err)
+	}
+
+	configVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL VARIABLES WHERE Variable_name = 'innodb_redo_log_capacity'")
+	if err != nil {
+		return nil, fmt.Errorf("innodb redo log: %w", err)
+	}
+
+	uptime := statusVars["Uptime"]
+	logWritten := statusVars["Innodb_os_log_written"]
+	redoCapacity := configVars["innodb_redo_log_capacity"]
+
+	if logWritten == 0 || redoCapacity == 0 {
+		return nil, nil
+	}
+
+	minutes := (uptime / 60) * redoCapacity / logWritten
+
+	var status, description string
+	switch {
+	case minutes < 45:
+		status = "warning"
+		description = fmt.Sprintf("InnoDB redo log would fill in %.1f min at current write rate. Below optimal range (45–75 min). Consider increasing innodb_redo_log_capacity.", minutes)
+	case minutes > 75:
+		status = "warning"
+		description = fmt.Sprintf("InnoDB redo log would fill in %.1f min at current write rate. Above optimal range (45–75 min). Consider reducing innodb_redo_log_capacity.", minutes)
+	default:
+		status = "ok"
+		description = fmt.Sprintf("InnoDB redo log would fill in %.1f min at current write rate. Within optimal range (45–75 min).", minutes)
+	}
+
+	return &Check{
+		Name:        "innodb_redo_log",
+		Value:       minutes,
+		Unit:        "min",
+		Status:      status,
+		Description: description,
+		Threshold:   "ok 45–75 min, warning < 45 or > 75 min",
+	}, nil
+}
+
 func checkMaxConnectionsUsage(ctx context.Context, db *sql.DB) (*Check, error) {
 	statusVars, err := queryStatusVars(ctx, db, "SHOW GLOBAL STATUS WHERE Variable_name = 'Threads_connected'")
 	if err != nil {
@@ -326,6 +370,7 @@ func init() {
 				func() (*Check, error) { return checkTemporaryTablesOnDisk(ctx, db) },
 				func() (*Check, error) { return checkHistoryListLength(ctx, db) },
 				func() (*Check, error) { return checkMaxConnectionsUsage(ctx, db) },
+				func() (*Check, error) { return checkInnoDBRedoLog(ctx, db) },
 			}
 
 			var checks []Check
