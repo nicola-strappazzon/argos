@@ -3,6 +3,7 @@ package plugins
 import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_docdb_collections"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_docdb_current_ops"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_docdb_server_status"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_docdb_databases"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_docdb_ping"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_ec2_list"

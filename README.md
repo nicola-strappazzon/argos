@@ -26,6 +26,7 @@ All-seeing Argos, is a personal [Model Context Protocol (MCP)](https://modelcont
 | `aws_docdb_databases` | List databases on a DocumentDB instance with their size (MB) and empty status |
 | `aws_docdb_collections` | List collections in a DocumentDB database with stats: document count, size (MB), average object size (bytes), index count and total index size (MB) |
 | `aws_docdb_current_ops` | Show active operations on a DocumentDB instance (equivalent to `db.currentOp()`). Optionally filter by minimum running time with `min_secs` |
+| `aws_docdb_server_status` | Show DocumentDB server telemetry (equivalent to `serverStatus` in MongoDB). Returns connections, operation counters (insert/query/update/delete/getmore/command), memory usage (resident/virtual MB), network I/O (bytes in/out, requests), global lock queue and active clients, uptime, host and version |
 | `mysql_databases` | List databases on a MySQL instance with their size (MB), character set, collation and table count |
 | `mysql_tables` | List tables within a database with engine, size (data/index/free), charset, collation, row format, estimated rows, fragmentation percentage, auto_increment, comment and timestamps |
 | `mysql_describe_table` | Describe the columns of a table: type, nullability, default, charset, collation, key type, extra and comment |
