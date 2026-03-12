@@ -22,6 +22,7 @@ import (
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/aws/aws_secrets_list"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_databases"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_describe_table"
+	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_documentation"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_explain"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_health_check"
 	_ "github.com/nicola-strappazzon/argos/tools/plugins/mysql/mysql_innodb"

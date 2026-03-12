@@ -19,6 +19,7 @@
 | `mysql_performance` | Analyze MySQL configuration variables and return tuning recommendations with status (`ok` / `warning`). Checks: InnoDB buffer pool chunk size alignment and chunk size ratio (optimal: 2–5% of buffer pool) |
 | `mysql_health_check` | Run health checks on a MySQL instance and return key metrics with status (`ok` / `warning` / `critical`). Checks: InnoDB buffer pool hit rate, buffer pool size vs available RAM, thread cache hit rate, thread cache ratio, temporary tables on disk, InnoDB history list length, max connections usage, InnoDB dirty pages ratio, open files utilization, flushing logs ratio, sort merge passes ratio, and InnoDB redo log fill time |
 | `mysql_schema_check` | Run schema-level checks on a MySQL instance with status (`ok` / `warning`). Checks: deprecated table engine (MyISAM) and missing primary keys |
+| `mysql_documentation` | List all tables and their columns in a database grouped by table. Returns table comment, and for each column: name, type, unsigned, nullable, default and comment |
 
 ## Credentials
 
